@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Scratch Card</title>
+    <style>
+        #canvas {
+            background: no-repeat center;
+            width: 300px;
+            height: 150px;
+        }
+    </style>
+    <script>
+        function init() {
+            var canvas = document.getElementById('canvas');
+            var ctx = canvas.getContext('2d');
+            ctx.fillStyle = 'gray';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            function getOffset(e) {
+                var rect = canvas.getBoundingClientRect();
+                var offsetX, offsetY;
+                if (e.touches && e.touches.length > 0) {
+                    offsetX = e.touches[0].clientX - rect.left;
+                    offsetY = e.touches[0].clientY - rect.top;
+                } else {
+                    offsetX = e.clientX - rect.left;
+                    offsetY = e.clientY - rect.top;
+                }
+                return { x: offsetX, y: offsetY };
+            }
+
+            function scratch(e) {
+                e.preventDefault();
+                var offset = getOffset(e);
+                ctx.clearRect(offset.x, offset.y, 10, 10);
+            }
+
+            // Get the scratch card image URL from query parameters
+            var urlParams = new URLSearchParams(window.location.search);
+            var cardUrl = urlParams.get('cardUrl');
+            var img = new Image();
+            img.src = cardUrl;
+            img.onload = function() {
+                canvas.style.backgroundImage = 'url(' + cardUrl + ')';
+            };
+
+            canvas.addEventListener('mousedown', function(e) {
+                canvas.addEventListener('mousemove', scratch, false);
+            }, false);
+
+            canvas.addEventListener('mouseup', function(e) {
+                canvas.removeEventListener('mousemove', scratch, false);
+            }, false);
+
+            canvas.addEventListener('touchstart', function(e) {
+                canvas.addEventListener('touchmove', scratch, false);
+            }, false);
+
+            canvas.addEventListener('touchend', function(e) {
+                canvas.removeEventListener('touchmove', scratch, false);
+            }, false);
+        }
+    </script>
+</head>
+<body onload="init()">
+    <canvas id="canvas" width="300" height="150"></canvas>
+</body>
+</html>
