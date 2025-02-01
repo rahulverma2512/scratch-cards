@@ -3,10 +3,9 @@ import random
 
 # Define a list of colors for the background
 colors = [
-    (255, 99, 71),  # Tomato
+    (255, 0, 0),    # Red
     (0, 128, 0),    # Green
     (135, 206, 235),# Sky Blue
-    (0, 128, 128),  # Teal Blue
     (255, 215, 0),  # Gold
     (0, 100, 0),    # Dark Green
     (47, 79, 79),   # Dark Slate Gray
