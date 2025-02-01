@@ -31,54 +31,15 @@
 
             function scratch(e) {
                 var offset = getOffset(e);
+                ctx.globalCompositeOperation = 'destination-out';
                 ctx.beginPath();
-                ctx.arc(offset.x, offset.y, 20, 0, Math.PI * 2, true);
+                ctx.arc(offset.x, offset.y, 15, 0, Math.PI * 2, true);
                 ctx.fill();
             }
 
             function handleMove(e) {
                 e.preventDefault();
-                if (scratching) {
-                    scratch(e);
-                }
+                scratch(e);
             }
 
-            var scratching = false;
-
-            canvas.addEventListener('mousedown', function(e) {
-                scratching = true;
-                scratch(e);
-                canvas.addEventListener('mousemove', handleMove, false);
-            }, false);
-
-            canvas.addEventListener('mouseup', function(e) {
-                scratching = false;
-                canvas.removeEventListener('mousemove', handleMove, false);
-            }, false);
-
-            canvas.addEventListener('touchstart', function(e) {
-                scratching = true;
-                scratch(e);
-                canvas.addEventListener('touchmove', handleMove, false);
-            }, false);
-
-            canvas.addEventListener('touchend', function(e) {
-                scratching = false;
-                canvas.removeEventListener('touchmove', handleMove, false);
-            }, false);
-
-            // Get the scratch card image URL from query parameters
-            var urlParams = new URLSearchParams(window.location.search);
-            var cardUrl = urlParams.get('cardUrl');
-            var img = new Image();
-            img.src = cardUrl;
-            img.onload = function() {
-                canvas.style.backgroundImage = 'url(' + cardUrl + ')';
-            };
-        }
-    </script>
-</head>
-<body onload="init()">
-    <canvas id="canvas" width="300" height="150"></canvas>
-</body>
-</html>
+            function
