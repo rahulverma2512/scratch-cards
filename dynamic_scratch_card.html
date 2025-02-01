@@ -20,28 +20,30 @@
             font-size: 24px;
             color: #333;
             margin-bottom: 20px;
-        }
-
-        #canvas {
-            border-radius: 8px;
-            cursor: pointer;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            text-align: center;
         }
 
         .canvas-container {
-            max-width: 90%;
-            max-height: 80%;
-            width: 300px;
+            position: relative;
+            max-width: 150px;
+            max-height: 150px;
+            width: 150px;
             height: 150px;
             background-color: #fff;
-            border-radius: 8px;
+            border-radius: 20px; /* Rounded corners */
+            overflow: hidden;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        #canvas {
+            border-radius: 20px; /* Ensure the canvas also has rounded corners */
         }
     </style>
 </head>
 <body>
     <div class="message">Scratch here to see your team number!</div>
     <div class="canvas-container">
-        <canvas id="canvas" width="300" height="150"></canvas>
+        <canvas id="canvas" width="150" height="150"></canvas>
     </div>
 
     <script>
