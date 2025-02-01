@@ -4,29 +4,31 @@ import random
 # Define a list of colors for the background
 colors = [
     (255, 99, 71),  # Tomato
-    (255, 165, 0),  # Orange
     (0, 128, 0),    # Green
     (135, 206, 235),# Sky Blue
-    (255, 69, 0),   # Red-Orange
-    (255, 255, 255),  # White
-    (0, 128, 128),    # Teal Blue
-    (139, 0, 0),      # Dark Red (Firebrick)
-    (0, 0, 139),      # Dark Blue
-    (75, 0, 130),     # Indigo
-    (128, 0, 0),      # Maroon
-    (0, 100, 0),      # Dark Green
-    (47, 79, 79),     # Dark Slate Gray
-    (128, 128, 0),    # Olive
+    (0, 128, 128),  # Teal Blue
+    (255, 215, 0),  # Gold
+    (0, 100, 0),    # Dark Green
+    (47, 79, 79),   # Dark Slate Gray
 ]
+
+# Create a list with each number (1 to 12) appearing exactly 3 times
+numbers = [i for i in range(1, 13)] * 3
+
+# Shuffle the numbers list to randomize the order
+random.shuffle(numbers)
 
 # Create scratch cards for 36 participants
 for i in range(1, 37):  # Adjust the range for the number of participants
-    number = random.randint(1, 12)  # Random number for team assignment
+    number = numbers[i - 1]  # Get the number from the shuffled list
     img = Image.new('RGB', (150, 150), color=random.choice(colors))  # Size adjusted to 150x150
     d = ImageDraw.Draw(img)
     
-    # Load a bold font with size 100
-    font = ImageFont.truetype('arial.ttf', 80)  # Font size 100 and bold
+    # Load a bold font with size 80 (ensure you have Arial-Bold.ttf or use another bold font)
+    try:
+        font = ImageFont.truetype('arialbd.ttf', 80)  # 'arialbd.ttf' is the bold version of Arial
+    except IOError:
+        font = ImageFont.truetype('arial.ttf', 80)  # Fallback to regular Arial if bold is not available
     
     # Get the bounding box for the text
     bbox = d.textbbox((0, 0), str(number), font=font)
@@ -36,9 +38,9 @@ for i in range(1, 37):  # Adjust the range for the number of participants
     # Calculate the x position to center the text
     x_position = (150 - text_width) / 2
     
-    # Draw the number with black bold font (black text) slightly higher
-    d.text((x_position, 30), str(number), font=font, fill=(0, 0, 0))  # Slightly adjusted Y-coordinate
-
+    # Draw the number with black bold font (black text)
+    d.text((x_position, 30), str(number), font=font, fill=(0, 0, 0))  # Black text
+    
     # Apply rounded corners
     rounded_img = Image.new('RGBA', (150, 150), (0, 0, 0, 0))  # Use RGBA for transparency
     rounded_draw = ImageDraw.Draw(rounded_img)
