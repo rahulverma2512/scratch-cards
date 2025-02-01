@@ -8,11 +8,15 @@ colors = [
     (0, 128, 0),    # Green
     (135, 206, 235),# Sky Blue
     (255, 69, 0),   # Red-Orange
-    (123, 104, 238),# Medium Slate Blue
-    (255, 215, 0),  # Gold
-    (255, 182, 193),# Light Pink
-    (255, 255, 0),  # Yellow
-    (238, 130, 238),# Violet
+    (255, 255, 255),  # White
+    (0, 128, 128),    # Teal Blue
+    (139, 0, 0),      # Dark Red (Firebrick)
+    (0, 0, 139),      # Dark Blue
+    (75, 0, 130),     # Indigo
+    (128, 0, 0),      # Maroon
+    (0, 100, 0),      # Dark Green
+    (47, 79, 79),     # Dark Slate Gray
+    (128, 128, 0),    # Olive
 ]
 
 # Create scratch cards for 36 participants
