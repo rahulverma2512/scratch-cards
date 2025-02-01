@@ -22,10 +22,18 @@ for i in range(1, 37):  # Adjust the range for the number of participants
     d = ImageDraw.Draw(img)
     
     # Load a bold font with size 100
-    font = ImageFont.truetype('arial.ttf', 100)  # Font size 100 and bold
+    font = ImageFont.truetype('arial.ttf', 80)  # Font size 100 and bold
+    
+    # Get the bounding box for the text
+    bbox = d.textbbox((0, 0), str(number), font=font)
+    text_width = bbox[2] - bbox[0]  # Width of the text
+    text_height = bbox[3] - bbox[1]  # Height of the text
+    
+    # Calculate the x position to center the text
+    x_position = (150 - text_width) / 2
     
     # Draw the number with black bold font (black text) slightly higher
-    d.text((50, 30), str(number), font=font, fill=(0, 0, 0))  # Slightly adjusted Y-coordinate
+    d.text((x_position, 30), str(number), font=font, fill=(0, 0, 0))  # Slightly adjusted Y-coordinate
 
     # Apply rounded corners
     rounded_img = Image.new('RGBA', (150, 150), (0, 0, 0, 0))  # Use RGBA for transparency
