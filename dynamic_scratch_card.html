@@ -1,14 +1,39 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Scratch Card</title>
     <style>
+        body {
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f0f0f0;
+        }
+
         #canvas {
-            background: no-repeat center;
+            border-radius: 8px;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Ensuring canvas is responsive */
+        .canvas-container {
+            max-width: 90%;
+            max-height: 80%;
             width: 300px;
             height: 150px;
         }
     </style>
+</head>
+<body>
+    <div class="canvas-container">
+        <canvas id="canvas" width="300" height="150"></canvas>
+    </div>
+
     <script>
         function init() {
             var canvas = document.getElementById('canvas');
@@ -16,6 +41,7 @@
             ctx.fillStyle = 'gray';
             ctx.fillRect(0, 0, canvas.width, canvas.height);
 
+            // Function to get offset coordinates
             function getOffset(e) {
                 var rect = canvas.getBoundingClientRect();
                 var offsetX, offsetY;
@@ -29,19 +55,22 @@
                 return { x: offsetX, y: offsetY };
             }
 
+            // Function to apply scratch effect
             function scratch(e) {
                 var offset = getOffset(e);
-                ctx.globalCompositeOperation = 'destination-out';
+                ctx.globalCompositeOperation = 'destination-out'; // Make scratches transparent
                 ctx.beginPath();
-                ctx.arc(offset.x, offset.y, 15, 0, Math.PI * 2, true);
+                ctx.arc(offset.x, offset.y, 20, 0, Math.PI * 2, true); // Larger brush for a smoother effect
                 ctx.fill();
             }
 
+            // Handle mouse move or touch move
             function handleMove(e) {
                 e.preventDefault();
                 scratch(e);
             }
 
+            // Start scratching
             function startScratching(e) {
                 e.preventDefault();
                 canvas.addEventListener('mousemove', handleMove, false);
@@ -49,17 +78,27 @@
                 scratch(e);
             }
 
-            function stopScratching(e) {
+            // Stop scratching
+            function stopScratching() {
                 canvas.removeEventListener('mousemove', handleMove, false);
                 canvas.removeEventListener('touchmove', handleMove, false);
             }
 
+            // Event listeners for start and stop of scratching
             canvas.addEventListener('mousedown', startScratching, false);
             canvas.addEventListener('mouseup', stopScratching, false);
             canvas.addEventListener('touchstart', startScratching, false);
             canvas.addEventListener('touchend', stopScratching, false);
 
-            // Get the scratch card image URL from query parameters
+            // Make canvas responsive to window size
+            window.addEventListener('resize', function() {
+                var container = document.querySelector('.canvas-container');
+                canvas.width = container.offsetWidth;
+                canvas.height = container.offsetHeight;
+                ctx.fillRect(0, 0, canvas.width, canvas.height); // Reset the canvas
+            });
+
+            // Fetch the scratch card image URL from query parameters
             var urlParams = new URLSearchParams(window.location.search);
             var cardUrl = urlParams.get('cardUrl');
             if (cardUrl) {
@@ -67,14 +106,14 @@
                 img.src = cardUrl;
                 img.onload = function() {
                     canvas.style.backgroundImage = 'url(' + cardUrl + ')';
+                    canvas.style.backgroundSize = 'cover'; // Ensures image fits well
                 };
             } else {
                 console.error("No cardUrl parameter found in the URL.");
             }
         }
+
+        window.onload = init;
     </script>
-</head>
-<body onload="init()">
-    <canvas id="canvas" width="300" height="150"></canvas>
 </body>
 </html>
