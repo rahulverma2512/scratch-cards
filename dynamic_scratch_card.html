@@ -32,17 +32,8 @@
             function scratch(e) {
                 e.preventDefault();
                 var offset = getOffset(e);
-                ctx.clearRect(offset.x, offset.y, 10, 10);
+                ctx.clearRect(offset.x, offset.y, 30, 30); // Increase the clear area size for smoother scratching
             }
-
-            // Get the scratch card image URL from query parameters
-            var urlParams = new URLSearchParams(window.location.search);
-            var cardUrl = urlParams.get('cardUrl');
-            var img = new Image();
-            img.src = cardUrl;
-            img.onload = function() {
-                canvas.style.backgroundImage = 'url(' + cardUrl + ')';
-            };
 
             canvas.addEventListener('mousedown', function(e) {
                 canvas.addEventListener('mousemove', scratch, false);
@@ -59,6 +50,15 @@
             canvas.addEventListener('touchend', function(e) {
                 canvas.removeEventListener('touchmove', scratch, false);
             }, false);
+
+            // Get the scratch card image URL from query parameters
+            var urlParams = new URLSearchParams(window.location.search);
+            var cardUrl = urlParams.get('cardUrl');
+            var img = new Image();
+            img.src = cardUrl;
+            img.onload = function() {
+                canvas.style.backgroundImage = 'url(' + cardUrl + ')';
+            };
         }
     </script>
 </head>
