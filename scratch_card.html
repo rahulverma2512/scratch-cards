@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Scratch Card</title>
+    <style>
+        #canvas {
+            background: url('https://rahulverma2512.github.io/scratch-cards/scratch_card_1.png') no-repeat center;
+            width: 300px;
+            height: 150px;
+        }
+    </style>
+    <script>
+        function init() {
+            var canvas = document.getElementById('canvas');
+            var ctx = canvas.getContext('2d');
+            ctx.fillStyle = 'gray';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            
+            canvas.addEventListener('mousedown', function(e) {
+                canvas.addEventListener('mousemove', scratch, false);
+            }, false);
+
+            canvas.addEventListener('mouseup', function(e) {
+                canvas.removeEventListener('mousemove', scratch, false);
+            }, false);
+
+            function scratch(e) {
+                var x = e.pageX - canvas.offsetLeft;
+                var y = e.pageY - canvas.offsetTop;
+                ctx.clearRect(x, y, 10, 10);
+            }
+        }
+    </script>
+</head>
+<body onload="init()">
+    <canvas id="canvas" width="300" height="150"></canvas>
+</body>
+</html>
