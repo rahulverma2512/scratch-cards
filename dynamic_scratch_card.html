@@ -32,7 +32,7 @@
             function scratch(e) {
                 e.preventDefault();
                 var offset = getOffset(e);
-                ctx.clearRect(offset.x, offset.y, 30, 30); // Increase the clear area size for smoother scratching
+                ctx.clearRect(offset.x - 15, offset.y - 15, 30, 30); // Smooth, larger clear area
             }
 
             canvas.addEventListener('mousedown', function(e) {
