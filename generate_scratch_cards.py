@@ -20,20 +20,12 @@ for i in range(1, 37):  # Adjust the range for the number of participants
     number = random.randint(1, 12)  # Random number for team assignment
     img = Image.new('RGB', (150, 150), color=random.choice(colors))  # Size adjusted to 150x150
     d = ImageDraw.Draw(img)
-
-    # Calculate font size to cover 80% of the card size
-    font_size = int(150 * 0.8)  # 80% of the card size
-    font = ImageFont.truetype('arial.ttf', font_size)  # Set font size dynamically
     
-    # Calculate the position of the number to center it using textbbox
-    text_bbox = d.textbbox((0, 0), str(number), font=font)
-    text_width = text_bbox[2] - text_bbox[0]
-    text_height = text_bbox[3] - text_bbox[1]
+    # Load a bold font with size 100
+    font = ImageFont.truetype('arial.ttf', 100)  # Font size 100 and bold
     
-    # Position the text in the center
-    text_x = (150 - text_width) / 2
-    text_y = (150 - text_height) / 2
-    d.text((text_x, text_y), str(number), font=font, fill=(0, 0, 0))  # Black text
+    # Draw the number with black bold font (black text) slightly higher
+    d.text((50, 30), str(number), font=font, fill=(0, 0, 0))  # Slightly adjusted Y-coordinate
 
     # Apply rounded corners
     rounded_img = Image.new('RGBA', (150, 150), (0, 0, 0, 0))  # Use RGBA for transparency
