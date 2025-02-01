@@ -16,6 +16,7 @@
             ctx.fillStyle = 'gray';
             ctx.fillRect(0, 0, canvas.width, canvas.height);
             
+            // Handle mouse events
             canvas.addEventListener('mousedown', function(e) {
                 canvas.addEventListener('mousemove', scratch, false);
             }, false);
@@ -24,9 +25,25 @@
                 canvas.removeEventListener('mousemove', scratch, false);
             }, false);
 
+            // Handle touch events
+            canvas.addEventListener('touchstart', function(e) {
+                canvas.addEventListener('touchmove', scratch, false);
+            }, false);
+
+            canvas.addEventListener('touchend', function(e) {
+                canvas.removeEventListener('touchmove', scratch, false);
+            }, false);
+
             function scratch(e) {
-                var x = e.pageX - canvas.offsetLeft;
-                var y = e.pageY - canvas.offsetTop;
+                e.preventDefault(); // Prevent scrolling on touch devices
+                var x, y;
+                if (e.touches && e.touches.length > 0) {
+                    x = e.touches[0].pageX - canvas.offsetLeft;
+                    y = e.touches[0].pageY - canvas.offsetTop;
+                } else {
+                    x = e.pageX - canvas.offsetLeft;
+                    y = e.pageY - canvas.offsetTop;
+                }
                 ctx.clearRect(x, y, 10, 10);
             }
         }
