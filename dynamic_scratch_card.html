@@ -42,4 +42,39 @@
                 scratch(e);
             }
 
-            function
+            function startScratching(e) {
+                e.preventDefault();
+                canvas.addEventListener('mousemove', handleMove, false);
+                canvas.addEventListener('touchmove', handleMove, false);
+                scratch(e);
+            }
+
+            function stopScratching(e) {
+                canvas.removeEventListener('mousemove', handleMove, false);
+                canvas.removeEventListener('touchmove', handleMove, false);
+            }
+
+            canvas.addEventListener('mousedown', startScratching, false);
+            canvas.addEventListener('mouseup', stopScratching, false);
+            canvas.addEventListener('touchstart', startScratching, false);
+            canvas.addEventListener('touchend', stopScratching, false);
+
+            // Get the scratch card image URL from query parameters
+            var urlParams = new URLSearchParams(window.location.search);
+            var cardUrl = urlParams.get('cardUrl');
+            if (cardUrl) {
+                var img = new Image();
+                img.src = cardUrl;
+                img.onload = function() {
+                    canvas.style.backgroundImage = 'url(' + cardUrl + ')';
+                };
+            } else {
+                console.error("No cardUrl parameter found in the URL.");
+            }
+        }
+    </script>
+</head>
+<body onload="init()">
+    <canvas id="canvas" width="300" height="150"></canvas>
+</body>
+</html>
