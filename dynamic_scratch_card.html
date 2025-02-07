@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Scratch Card with Animation</title>
+    <title>Scratch Card with Animation After Scratch</title>
     <style>
         body {
             margin: 0;
@@ -37,7 +37,7 @@
             border-radius: 20px; /* Ensure the canvas also has rounded corners */
         }
 
-        /* Lottie Animation Container */
+        /* Lottie Animation Container (hidden by default) */
         .lottie-container {
             position: absolute;
             top: 0;
@@ -45,13 +45,14 @@
             width: 100%;
             height: 100%;
             pointer-events: none;
+            display: none; /* Hidden initially */
         }
     </style>
 </head>
 <body>
     <div class="message">Scratch here to see your team number!</div>
     <div class="canvas-container">
-        <!-- Lottie Animation Placeholder -->
+        <!-- Lottie Animation Placeholder (Initially hidden) -->
         <div class="lottie-container" id="lottie-animation"></div>
         
         <!-- Scratch Canvas -->
@@ -124,14 +125,24 @@
                 console.error("No cardUrl parameter found in the URL.");
             }
 
-            // Lottie Animation Integration
+            // Lottie Animation Integration (Initially hidden)
             var animationContainer = document.getElementById('lottie-animation');
             var animation = lottie.loadAnimation({
                 container: animationContainer, // The container for the animation
                 path: 'Animation-1738961650803.json', // Path to your Lottie animation file
                 renderer: 'svg', // Use SVG renderer
-                loop: true, // Loop the animation
-                autoplay: true // Auto-play the animation
+                loop: false, // Don't loop the animation
+                autoplay: false // Don't auto-play the animation
+            });
+
+            // Show Lottie animation after scratching
+            var scratched = false;
+            canvas.addEventListener('mouseup', function() {
+                if (!scratched) {
+                    scratched = true;
+                    animationContainer.style.display = 'block'; // Show the animation
+                    animation.play(); // Play the animation
+                }
             });
 
             // Resize canvas on window resize
