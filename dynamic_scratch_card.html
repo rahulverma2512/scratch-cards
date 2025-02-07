@@ -47,6 +47,7 @@
             width: 100%;
             height: 100%;
             z-index: 10;
+            visibility: hidden; /* Initially hidden */
         }
     </style>
 </head>
@@ -146,6 +147,7 @@
             var scratchingFinished = false;
             canvas.addEventListener('mouseup', function() {
                 if (!scratchingFinished) {
+                    lottieContainer.style.visibility = 'visible'; // Make Lottie animation visible
                     animation.play();
                     scratchingFinished = true;
                 }
