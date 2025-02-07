@@ -39,11 +39,14 @@
             border-radius: 20px; /* Ensure the canvas also has rounded corners */
         }
 
-        .confetti {
+        #lottie-container {
             position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
             width: 100%;
             height: 100%;
-            pointer-events: none;
+            z-index: 10;
         }
     </style>
 </head>
@@ -51,10 +54,11 @@
     <div class="message">Scratch here to see your team number!</div>
     <div class="canvas-container">
         <canvas id="canvas" width="150" height="150"></canvas>
-        <div class="confetti" id="confetti"></div>
+        <!-- Lottie Animation container -->
+        <div id="lottie-container"></div>
     </div>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/bodymovin/5.7.11/lottie.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/lottie-web/5.9.4/lottie.min.js"></script>
 
     <script>
         function init() {
@@ -62,15 +66,6 @@
             var ctx = canvas.getContext('2d');
             ctx.fillStyle = 'gray';
             ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-            // Initialize Lottie animation for confetti
-            var confettiAnimation = lottie.loadAnimation({
-                container: document.getElementById('confetti'),
-                renderer: 'svg',
-                loop: false,
-                autoplay: false,
-                path: 'path/to/your/confetti-animation.json' // Update with your confetti animation JSON path
-            });
 
             function getOffset(e) {
                 var rect = canvas.getBoundingClientRect();
@@ -91,7 +86,6 @@
                 ctx.beginPath();
                 ctx.arc(offset.x, offset.y, 20, 0, Math.PI * 2, true); // Larger brush for smoother effect
                 ctx.fill();
-                checkIfComplete();
             }
 
             function handleMove(e) {
@@ -109,20 +103,6 @@
             function stopScratching() {
                 canvas.removeEventListener('mousemove', handleMove, false);
                 canvas.removeEventListener('touchmove', handleMove, false);
-            }
-
-            function checkIfComplete() {
-                var data = ctx.getImageData(0, 0, canvas.width, canvas.height).data;
-                var total = data.length / 4;
-                var count = 0;
-                for (var i = 0; i < data.length; i += 4) {
-                    if (data[i + 3] === 0) { // Check if pixel is transparent
-                        count++;
-                    }
-                }
-                if (count / total > 0.7) { // Adjust the threshold as needed
-                    confettiAnimation.goToAndPlay(0, true); // Play the confetti animation
-                }
             }
 
             // Event listeners for start and stop of scratching
@@ -151,6 +131,25 @@
             } else {
                 console.error("No cardUrl parameter found in the URL.");
             }
+
+            // Lottie Animation (Celebration effect)
+            var lottieContainer = document.getElementById('lottie-container');
+            var animation = lottie.loadAnimation({
+                container: lottieContainer,
+                renderer: 'svg',
+                loop: false,
+                autoplay: false, // Don't start automatically
+                path: 'https://rahulverma2512.github.io/scratch-cards/1738961650803.json' // Replace with your Lottie JSON file URL
+            });
+
+            // Trigger the Lottie animation after the user scratches the card
+            var scratchingFinished = false;
+            canvas.addEventListener('mouseup', function() {
+                if (!scratchingFinished) {
+                    animation.play();
+                    scratchingFinished = true;
+                }
+            });
         }
 
         window.onload = init;
