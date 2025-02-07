@@ -39,18 +39,18 @@
             border-radius: 20px; /* Ensure the canvas also has rounded corners */
         }
 
-        .sparkle {
+        .confetti {
             position: absolute;
-            width: 5px;
-            height: 15px; /* Change height for strips */
+            width: 8px;
+            height: 12px;
             background-color: yellow; /* Default color */
             border-radius: 2px;
-            animation: sparkleRain 2s linear;
+            animation: confettiAnimation 2s linear;
         }
 
-        @keyframes sparkleRain {
-            0% { transform: translate(0, 0); opacity: 1; }
-            100% { transform: translate(20vw, -50vh); opacity: 0; }
+        @keyframes confettiAnimation {
+            0% { transform: translateY(0) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(-20vh) rotate(360deg); opacity: 0; }
         }
     </style>
 </head>
@@ -116,23 +116,23 @@
                     }
                 }
                 if (count / total > 0.7) { // Adjust the threshold as needed
-                    showSparkleRain();
+                    showConfetti();
                 }
             }
 
-            function showSparkleRain() {
+            function showConfetti() {
                 var colors = ['#FF0000', '#FF7F00', '#FFFF00', '#00FF00', '#0000FF', '#4B0082', '#8B00FF']; // Rainbow colors
                 for (var i = 0; i < 50; i++) {
-                    var sparkle = document.createElement('div');
-                    sparkle.className = 'sparkle';
-                    sparkle.style.left = 'calc(100% - 20px)'; // Start from right-bottom corner
-                    sparkle.style.bottom = '20px'; // Start from right-bottom corner
-                    sparkle.style.backgroundColor = colors[i % colors.length];
-                    sparkle.style.animationDelay = Math.random() * 0.5 + 's';
-                    document.body.appendChild(sparkle);
+                    var confetti = document.createElement('div');
+                    confetti.className = 'confetti';
+                    confetti.style.left = 'calc(100% - 75px)'; // Start from right-bottom corner
+                    confetti.style.bottom = '25px'; // Start from right-bottom corner
+                    confetti.style.backgroundColor = colors[i % colors.length];
+                    confetti.style.animationDelay = Math.random() * 0.5 + 's';
+                    document.body.appendChild(confetti);
                     
-                    // Remove sparkle after animation ends
-                    sparkle.addEventListener('animationend', function() {
+                    // Remove confetti after animation ends
+                    confetti.addEventListener('animationend', function() {
                         this.remove();
                     });
                 }
