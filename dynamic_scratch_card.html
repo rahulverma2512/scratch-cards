@@ -16,13 +16,6 @@
             font-family: Arial, sans-serif;
         }
 
-        .message {
-            font-size: 24px;
-            color: #333;
-            margin-bottom: 20px;
-            text-align: center;
-        }
-
         .canvas-container {
             position: relative;
             max-width: 150px;
@@ -30,16 +23,16 @@
             width: 150px;
             height: 150px;
             background-color: #fff;
-            border-radius: 20px; /* Rounded corners */
+            border-radius: 20px;
             overflow: hidden;
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
         }
 
         #canvas {
-            border-radius: 20px; /* Ensure the canvas also has rounded corners */
+            border-radius: 20px;
         }
 
-        /* Animation styles for the sparkling effect */
+        /* Animation styles for the sparkle effect */
         .sparkle {
             position: absolute;
             top: 50%;
@@ -68,10 +61,34 @@
                 opacity: 0;
             }
         }
+
+        /* Extra sparkles with color variation for celebration */
+        .extra-sparkle {
+            background: rgba(255, 223, 0, 1);
+            animation: extraSparkleAnimation 1.5s ease-out infinite;
+        }
+
+        @keyframes extraSparkleAnimation {
+            0% {
+                width: 0px;
+                height: 0px;
+                opacity: 1;
+            }
+            50% {
+                width: 40px;
+                height: 40px;
+                opacity: 0.6;
+            }
+            100% {
+                width: 60px;
+                height: 60px;
+                opacity: 0;
+            }
+        }
+
     </style>
 </head>
 <body>
-    <div class="message">Scratch here to see your team number!</div>
     <div class="canvas-container">
         <canvas id="canvas" width="150" height="150"></canvas>
     </div>
@@ -83,7 +100,7 @@
             ctx.fillStyle = 'gray';
             ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-            var scratchedArea = 0; // To keep track of scratched area
+            var scratchedArea = 0;
 
             function getOffset(e) {
                 var rect = canvas.getBoundingClientRect();
@@ -100,15 +117,14 @@
 
             function scratch(e) {
                 var offset = getOffset(e);
-                ctx.globalCompositeOperation = 'destination-out'; // Make scratches transparent
+                ctx.globalCompositeOperation = 'destination-out'; 
                 ctx.beginPath();
-                ctx.arc(offset.x, offset.y, 20, 0, Math.PI * 2, true); // Larger brush for smoother effect
+                ctx.arc(offset.x, offset.y, 20, 0, Math.PI * 2, true);
                 ctx.fill();
 
-                // Calculate scratched area percentage
-                scratchedArea += Math.PI * Math.pow(20, 2); // area of the scratch (circle with radius 20)
-                if (scratchedArea > (canvas.width * canvas.height) * 0.6) { // 60% scratched
-                    showSparkleEffect();
+                scratchedArea += Math.PI * Math.pow(20, 2); 
+                if (scratchedArea > (canvas.width * canvas.height) * 0.6) { 
+                    showSparkles();
                 }
             }
 
@@ -129,7 +145,6 @@
                 canvas.removeEventListener('touchmove', handleMove, false);
             }
 
-            // Event listeners for start and stop of scratching
             canvas.addEventListener('mousedown', startScratching, false);
             canvas.addEventListener('mouseup', stopScratching, false);
             canvas.addEventListener('touchstart', startScratching, false);
@@ -139,10 +154,9 @@
                 var container = document.querySelector('.canvas-container');
                 canvas.width = container.offsetWidth;
                 canvas.height = container.offsetHeight;
-                ctx.fillRect(0, 0, canvas.width, canvas.height); // Reset the canvas
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
             });
 
-            // Fetch the scratch card image URL from query parameters
             var urlParams = new URLSearchParams(window.location.search);
             var cardUrl = urlParams.get('cardUrl');
             if (cardUrl) {
@@ -150,29 +164,32 @@
                 img.src = cardUrl;
                 img.onload = function() {
                     canvas.style.backgroundImage = 'url(' + cardUrl + ')';
-                    canvas.style.backgroundSize = 'cover'; // Ensures image fits well
+                    canvas.style.backgroundSize = 'cover';
                 };
             } else {
                 console.error("No cardUrl parameter found in the URL.");
             }
         }
 
-        // Function to display the sparkle effect
-        function showSparkleEffect() {
-            var sparkle = document.createElement('div');
-            sparkle.classList.add('sparkle');
-            document.body.appendChild(sparkle);
+        function showSparkles() {
+            var sparkleCount = 10;
+            var canvasRect = document.getElementById('canvas').getBoundingClientRect();
 
-            // Position the sparkle at the center of the canvas
-            var canvas = document.getElementById('canvas');
-            var rect = canvas.getBoundingClientRect();
-            sparkle.style.top = rect.top + rect.height / 2 + 'px';
-            sparkle.style.left = rect.left + rect.width / 2 + 'px';
+            for (let i = 0; i < sparkleCount; i++) {
+                var sparkle = document.createElement('div');
+                sparkle.classList.add('sparkle', 'extra-sparkle');
+                document.body.appendChild(sparkle);
 
-            // Remove the sparkle after the animation ends
-            setTimeout(function() {
-                sparkle.remove();
-            }, 600); // Duration of the animation
+                var randomX = Math.random() * canvasRect.width + canvasRect.left;
+                var randomY = Math.random() * canvasRect.height + canvasRect.top;
+
+                sparkle.style.top = randomY + 'px';
+                sparkle.style.left = randomX + 'px';
+
+                setTimeout(() => {
+                    sparkle.remove();
+                }, 1500);
+            }
         }
 
         window.onload = init;
