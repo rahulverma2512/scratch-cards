@@ -8,12 +8,12 @@
         body {
             margin: 0;
             display: flex;
-            flex-direction: column;
             justify-content: center;
             align-items: center;
             height: 100vh;
             background-color: #f0f0f0;
             font-family: Arial, sans-serif;
+            overflow: hidden;
         }
 
         .canvas-container {
@@ -39,11 +39,11 @@
             transform: translate(-50%, -50%);
             font-size: 36px;
             font-weight: bold;
+            color: transparent;
             background: linear-gradient(45deg, red, orange, yellow, green, blue, purple);
             -webkit-background-clip: text;
-            color: transparent;
+            animation: yayAnimation 2s ease-out forwards;
             opacity: 0;
-            animation: yayAnimation 2s forwards, colorChange 2s infinite;
         }
 
         @keyframes yayAnimation {
@@ -53,7 +53,7 @@
             }
             50% {
                 opacity: 1;
-                transform: translate(-50%, -50%) scale(1.2);
+                transform: translate(-50%, -50%) scale(1.1);
             }
             100% {
                 opacity: 1;
@@ -61,23 +61,11 @@
             }
         }
 
-        @keyframes colorChange {
-            0% {
-                background: linear-gradient(45deg, red, orange, yellow, green, blue, purple);
-            }
-            50% {
-                background: linear-gradient(45deg, purple, blue, green, yellow, orange, red);
-            }
-            100% {
-                background: linear-gradient(45deg, red, orange, yellow, green, blue, purple);
-            }
-        }
-
-        /* Confetti animation */
+        /* Confetti effect */
         .confetti {
             position: absolute;
-            width: 8px;
-            height: 8px;
+            width: 10px;
+            height: 10px;
             background-color: #FFD700;
             opacity: 0;
             animation: confettiAnimation 2s ease-out forwards;
@@ -196,11 +184,10 @@
         function showCongratulationText() {
             var congratulationText = document.getElementById('congratulationText');
             congratulationText.style.opacity = 1;
-            congratulationText.style.animation = 'yayAnimation 2s forwards';
         }
 
         function showConfetti() {
-            var confettiCount = 30;
+            var confettiCount = 50;
             var canvasRect = document.getElementById('canvas').getBoundingClientRect();
             var confettiWrapper = document.getElementById('confettiWrapper');
 
