@@ -8,108 +8,70 @@
         body {
             margin: 0;
             display: flex;
+            flex-direction: column;
             justify-content: center;
             align-items: center;
             height: 100vh;
             background-color: #f0f0f0;
             font-family: Arial, sans-serif;
-            overflow: hidden;
+        }
+
+        .message {
+            font-size: 24px;
+            color: #333;
+            margin-bottom: 20px;
+            text-align: center;
         }
 
         .canvas-container {
             position: relative;
-            max-width: 300px;
-            max-height: 300px;
-            width: 300px;
-            height: 300px;
+            max-width: 150px;
+            max-height: 150px;
+            width: 150px;
+            height: 150px;
             background-color: #fff;
-            border-radius: 20px;
+            border-radius: 20px; /* Rounded corners */
             overflow: hidden;
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
         }
 
         #canvas {
-            border-radius: 20px;
+            border-radius: 20px; /* Ensure the canvas also has rounded corners */
         }
 
-        .congratulation-text {
+        .sparkle {
             position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            font-size: 36px;
-            font-weight: bold;
-            color: transparent;
-            background: linear-gradient(45deg, red, orange, yellow, green, blue, purple);
-            -webkit-background-clip: text;
-            animation: yayAnimation 2s ease-out forwards;
-            opacity: 0;
+            width: 5px;
+            height: 5px;
+            background-color: yellow;
+            border-radius: 50%;
+            animation: sparkle 1s linear infinite;
         }
 
-        @keyframes yayAnimation {
-            0% {
-                opacity: 0;
-                transform: translate(-50%, -50%) scale(0);
-            }
-            50% {
-                opacity: 1;
-                transform: translate(-50%, -50%) scale(1.1);
-            }
-            100% {
-                opacity: 1;
-                transform: translate(-50%, -50%) scale(1);
-            }
+        @keyframes sparkle {
+            0% { opacity: 0; }
+            50% { opacity: 1; }
+            100% { opacity: 0; }
         }
 
-        /* Confetti effect */
-        .confetti {
-            position: absolute;
-            width: 10px;
-            height: 10px;
-            background-color: #FFD700;
-            opacity: 0;
-            animation: confettiAnimation 2s ease-out forwards;
+        @keyframes sparkleRain {
+            0% { transform: translateY(-100px); opacity: 1; }
+            100% { transform: translateY(100vh); opacity: 0; }
         }
-
-        @keyframes confettiAnimation {
-            0% {
-                opacity: 1;
-                transform: translate(0, 0) rotate(0deg);
-            }
-            100% {
-                opacity: 0;
-                transform: translate(var(--x), var(--y)) rotate(720deg);
-            }
-        }
-
-        .confetti-wrapper {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-        }
-
     </style>
 </head>
 <body>
+    <div class="message">Scratch here to see your team number!</div>
     <div class="canvas-container">
-        <canvas id="canvas" width="300" height="300"></canvas>
-        <div class="congratulation-text" id="congratulationText">YAY!</div>
-        <div class="confetti-wrapper" id="confettiWrapper"></div>
+        <canvas id="canvas" width="150" height="150"></canvas>
     </div>
 
     <script>
         function init() {
             var canvas = document.getElementById('canvas');
             var ctx = canvas.getContext('2d');
-            var congratulationText = document.getElementById('congratulationText');
-            var confettiWrapper = document.getElementById('confettiWrapper');
             ctx.fillStyle = 'gray';
             ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-            var scratchedArea = 0;
 
             function getOffset(e) {
                 var rect = canvas.getBoundingClientRect();
@@ -126,16 +88,11 @@
 
             function scratch(e) {
                 var offset = getOffset(e);
-                ctx.globalCompositeOperation = 'destination-out'; 
+                ctx.globalCompositeOperation = 'destination-out'; // Make scratches transparent
                 ctx.beginPath();
-                ctx.arc(offset.x, offset.y, 20, 0, Math.PI * 2, true);
+                ctx.arc(offset.x, offset.y, 20, 0, Math.PI * 2, true); // Larger brush for smoother effect
                 ctx.fill();
-
-                scratchedArea += Math.PI * Math.pow(20, 2); 
-                if (scratchedArea > (canvas.width * canvas.height) * 0.6) { 
-                    showConfetti();
-                    showCongratulationText();
-                }
+                checkIfComplete();
             }
 
             function handleMove(e) {
@@ -155,6 +112,33 @@
                 canvas.removeEventListener('touchmove', handleMove, false);
             }
 
+            function checkIfComplete() {
+                var data = ctx.getImageData(0, 0, canvas.width, canvas.height).data;
+                var total = data.length / 4;
+                var count = 0;
+                for (var i = 0; i < data.length; i += 4) {
+                    if (data[i + 3] === 0) { // Check if pixel is transparent
+                        count++;
+                    }
+                }
+                if (count / total > 0.7) { // Adjust the threshold as needed
+                    showSparkleRain();
+                }
+            }
+
+            function showSparkleRain() {
+                for (var i = 0; i < 100; i++) {
+                    var sparkle = document.createElement('div');
+                    sparkle.className = 'sparkle';
+                    sparkle.style.left = Math.random() * 100 + 'vw';
+                    sparkle.style.top = Math.random() * -100 + 'px';
+                    sparkle.style.animationDelay = Math.random() * 2 + 's';
+                    sparkle.style.animationName = 'sparkle, sparkleRain';
+                    document.body.appendChild(sparkle);
+                }
+            }
+
+            // Event listeners for start and stop of scratching
             canvas.addEventListener('mousedown', startScratching, false);
             canvas.addEventListener('mouseup', stopScratching, false);
             canvas.addEventListener('touchstart', startScratching, false);
@@ -164,9 +148,10 @@
                 var container = document.querySelector('.canvas-container');
                 canvas.width = container.offsetWidth;
                 canvas.height = container.offsetHeight;
-                ctx.fillRect(0, 0, canvas.width, canvas.height);
+                ctx.fillRect(0, 0, canvas.width, canvas.height); // Reset the canvas
             });
 
+            // Fetch the scratch card image URL from query parameters
             var urlParams = new URLSearchParams(window.location.search);
             var cardUrl = urlParams.get('cardUrl');
             if (cardUrl) {
@@ -174,38 +159,10 @@
                 img.src = cardUrl;
                 img.onload = function() {
                     canvas.style.backgroundImage = 'url(' + cardUrl + ')';
-                    canvas.style.backgroundSize = 'cover';
+                    canvas.style.backgroundSize = 'cover'; // Ensures image fits well
                 };
             } else {
                 console.error("No cardUrl parameter found in the URL.");
-            }
-        }
-
-        function showCongratulationText() {
-            var congratulationText = document.getElementById('congratulationText');
-            congratulationText.style.opacity = 1;
-        }
-
-        function showConfetti() {
-            var confettiCount = 50;
-            var canvasRect = document.getElementById('canvas').getBoundingClientRect();
-            var confettiWrapper = document.getElementById('confettiWrapper');
-
-            for (let i = 0; i < confettiCount; i++) {
-                var confetti = document.createElement('div');
-                confetti.classList.add('confetti');
-                confettiWrapper.appendChild(confetti);
-
-                var randomX = (Math.random() - 0.5) * 200;
-                var randomY = (Math.random() - 0.5) * 200;
-                confetti.style.setProperty('--x', randomX + 'px');
-                confetti.style.setProperty('--y', randomY + 'px');
-                confetti.style.top = Math.random() * canvasRect.height + canvasRect.top + 'px';
-                confetti.style.left = Math.random() * canvasRect.width + canvasRect.left + 'px';
-
-                setTimeout(() => {
-                    confetti.remove();
-                }, 2000);
             }
         }
 
