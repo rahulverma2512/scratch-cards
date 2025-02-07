@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Scratch Card</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bodymovin/5.7.4/lottie.min.js"></script>
     <style>
         body {
             margin: 0;
@@ -36,27 +37,28 @@
         }
 
         #canvas {
-            border-radius: 20px; /* Ensure the canvas also has rounded corners */
-        }
-
-        .confetti {
             position: absolute;
-            width: 8px;
-            height: 12px;
-            background-color: yellow; /* Default color */
-            border-radius: 2px;
-            animation: confettiAnimation 2s linear;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border-radius: 20px;
+            pointer-events: none; /* Disable pointer events so Lottie can work */
         }
 
-        @keyframes confettiAnimation {
-            0% { transform: translateY(0) rotate(0deg); opacity: 1; }
-            100% { transform: translateY(-20vh) rotate(360deg); opacity: 0; }
+        #lottie-animation {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
         }
     </style>
 </head>
 <body>
     <div class="message">Scratch here to see your team number!</div>
     <div class="canvas-container">
+        <div id="lottie-animation"></div>
         <canvas id="canvas" width="150" height="150"></canvas>
     </div>
 
@@ -66,6 +68,15 @@
             var ctx = canvas.getContext('2d');
             ctx.fillStyle = 'gray';
             ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            // Initialize Lottie Animation
+            var animation = lottie.loadAnimation({
+                container: document.getElementById('lottie-animation'),
+                renderer: 'svg',
+                loop: true,
+                autoplay: true,
+                path: 'https://assets2.lottiefiles.com/packages/lf20_ekxv4zvw.json' // Link to your scratch animation
+            });
 
             function getOffset(e) {
                 var rect = canvas.getBoundingClientRect();
@@ -86,7 +97,6 @@
                 ctx.beginPath();
                 ctx.arc(offset.x, offset.y, 20, 0, Math.PI * 2, true); // Larger brush for smoother effect
                 ctx.fill();
-                checkIfComplete();
             }
 
             function handleMove(e) {
@@ -104,38 +114,6 @@
             function stopScratching() {
                 canvas.removeEventListener('mousemove', handleMove, false);
                 canvas.removeEventListener('touchmove', handleMove, false);
-            }
-
-            function checkIfComplete() {
-                var data = ctx.getImageData(0, 0, canvas.width, canvas.height).data;
-                var total = data.length / 4;
-                var count = 0;
-                for (var i = 0; i < data.length; i += 4) {
-                    if (data[i + 3] === 0) { // Check if pixel is transparent
-                        count++;
-                    }
-                }
-                if (count / total > 0.7) { // Adjust the threshold as needed
-                    showConfetti();
-                }
-            }
-
-            function showConfetti() {
-                var colors = ['#FF0000', '#FF7F00', '#FFFF00', '#00FF00', '#0000FF', '#4B0082', '#8B00FF']; // Rainbow colors
-                for (var i = 0; i < 50; i++) {
-                    var confetti = document.createElement('div');
-                    confetti.className = 'confetti';
-                    confetti.style.left = 'calc(100% - 75px)'; // Start from right-bottom corner
-                    confetti.style.bottom = '25px'; // Start from right-bottom corner
-                    confetti.style.backgroundColor = colors[i % colors.length];
-                    confetti.style.animationDelay = Math.random() * 0.5 + 's';
-                    document.body.appendChild(confetti);
-                    
-                    // Remove confetti after animation ends
-                    confetti.addEventListener('animationend', function() {
-                        this.remove();
-                    });
-                }
             }
 
             // Event listeners for start and stop of scratching
