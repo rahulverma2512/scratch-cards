@@ -145,6 +145,15 @@
                 }
             });
 
+            // Handling touch end event for mobile
+            canvas.addEventListener('touchend', function() {
+                if (!scratched) {
+                    scratched = true;
+                    animationContainer.style.display = 'block'; // Show the animation
+                    animation.play(); // Play the animation
+                }
+            });
+
             // Resize canvas on window resize
             window.addEventListener('resize', function() {
                 var container = document.querySelector('.canvas-container');
