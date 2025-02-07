@@ -42,10 +42,10 @@
         .sparkle {
             position: absolute;
             width: 5px;
-            height: 5px;
-            background-color: yellow;
-            border-radius: 50%;
-            animation: sparkle 1s linear infinite;
+            height: 15px; /* Change height for strips */
+            background-color: yellow; /* Default color */
+            border-radius: 2px;
+            animation: sparkle 1s linear infinite, sparkleRain 3s linear infinite;
         }
 
         @keyframes sparkle {
@@ -127,6 +127,7 @@
             }
 
             function showSparkleRain() {
+                var colors = ['#FF0000', '#FF7F00', '#FFFF00', '#00FF00', '#0000FF', '#4B0082', '#8B00FF']; // Rainbow colors
                 for (var i = 0; i < 100; i++) {
                     var sparkle = document.createElement('div');
                     sparkle.className = 'sparkle';
@@ -134,6 +135,7 @@
                     sparkle.style.top = Math.random() * -100 + 'px';
                     sparkle.style.animationDelay = Math.random() * 2 + 's';
                     sparkle.style.animationName = 'sparkle, sparkleRain';
+                    sparkle.style.backgroundColor = colors[i % colors.length];
                     document.body.appendChild(sparkle);
                 }
             }
