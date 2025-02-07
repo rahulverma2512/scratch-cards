@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Scratch Card</title>
+    <title>Scratch Card with Animation</title>
     <style>
         body {
             margin: 0;
@@ -25,10 +25,8 @@
 
         .canvas-container {
             position: relative;
-            max-width: 150px;
-            max-height: 150px;
-            width: 150px;
-            height: 150px;
+            width: 150px;  /* Fixed size */
+            height: 150px; /* Fixed size */
             background-color: #fff;
             border-radius: 20px; /* Rounded corners */
             overflow: hidden;
@@ -39,28 +37,28 @@
             border-radius: 20px; /* Ensure the canvas also has rounded corners */
         }
 
-        #lottie-container {
+        /* Lottie Animation Container */
+        .lottie-container {
             position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
+            top: 0;
+            left: 0;
             width: 100%;
             height: 100%;
-            z-index: 10;
-            visibility: hidden; /* Initially hidden */
+            pointer-events: none;
         }
     </style>
 </head>
 <body>
     <div class="message">Scratch here to see your team number!</div>
     <div class="canvas-container">
+        <!-- Lottie Animation Placeholder -->
+        <div class="lottie-container" id="lottie-animation"></div>
+        
+        <!-- Scratch Canvas -->
         <canvas id="canvas" width="150" height="150"></canvas>
-        <!-- Lottie Animation container -->
-        <div id="lottie-container"></div>
     </div>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/lottie-web/5.9.4/lottie.min.js"></script>
-
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/lottie-web/5.10.0/lottie.min.js"></script>
     <script>
         function init() {
             var canvas = document.getElementById('canvas');
@@ -112,13 +110,6 @@
             canvas.addEventListener('touchstart', startScratching, false);
             canvas.addEventListener('touchend', stopScratching, false);
 
-            window.addEventListener('resize', function() {
-                var container = document.querySelector('.canvas-container');
-                canvas.width = container.offsetWidth;
-                canvas.height = container.offsetHeight;
-                ctx.fillRect(0, 0, canvas.width, canvas.height); // Reset the canvas
-            });
-
             // Fetch the scratch card image URL from query parameters
             var urlParams = new URLSearchParams(window.location.search);
             var cardUrl = urlParams.get('cardUrl');
@@ -133,24 +124,22 @@
                 console.error("No cardUrl parameter found in the URL.");
             }
 
-            // Lottie Animation (Celebration effect)
-            var lottieContainer = document.getElementById('lottie-container');
+            // Lottie Animation Integration
+            var animationContainer = document.getElementById('lottie-animation');
             var animation = lottie.loadAnimation({
-                container: lottieContainer,
-                renderer: 'svg',
-                loop: false,
-                autoplay: false, // Don't start automatically
-                path: 'https://rahulverma2512.github.io/scratch-cards/Animation-1738961650803.json' // Corrected Lottie JSON path
+                container: animationContainer, // The container for the animation
+                path: 'Animation-1738961650803.json', // Path to your Lottie animation file
+                renderer: 'svg', // Use SVG renderer
+                loop: true, // Loop the animation
+                autoplay: true // Auto-play the animation
             });
 
-            // Trigger the Lottie animation after the user scratches the card
-            var scratchingFinished = false;
-            canvas.addEventListener('mouseup', function() {
-                if (!scratchingFinished) {
-                    lottieContainer.style.visibility = 'visible'; // Make Lottie animation visible
-                    animation.play();
-                    scratchingFinished = true;
-                }
+            // Resize canvas on window resize
+            window.addEventListener('resize', function() {
+                var container = document.querySelector('.canvas-container');
+                canvas.width = container.offsetWidth;
+                canvas.height = container.offsetHeight;
+                ctx.fillRect(0, 0, canvas.width, canvas.height); // Reset the canvas
             });
         }
 
