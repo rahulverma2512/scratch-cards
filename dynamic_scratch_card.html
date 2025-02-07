@@ -18,10 +18,10 @@
 
         .canvas-container {
             position: relative;
-            max-width: 150px;
-            max-height: 150px;
-            width: 150px;
-            height: 150px;
+            max-width: 300px;
+            max-height: 300px;
+            width: 300px;
+            height: 300px;
             background-color: #fff;
             border-radius: 20px;
             overflow: hidden;
@@ -32,71 +32,92 @@
             border-radius: 20px;
         }
 
-        /* Animation styles for the sparkle effect */
-        .sparkle {
+        .congratulation-text {
             position: absolute;
             top: 50%;
             left: 50%;
-            width: 0px;
-            height: 0px;
-            border-radius: 50%;
-            background: rgba(255, 215, 0, 1);
-            animation: sparkleAnimation 0.6s ease-out forwards;
+            transform: translate(-50%, -50%);
+            font-size: 36px;
+            font-weight: bold;
+            background: linear-gradient(45deg, red, orange, yellow, green, blue, purple);
+            -webkit-background-clip: text;
+            color: transparent;
+            opacity: 0;
+            animation: yayAnimation 2s forwards, colorChange 2s infinite;
         }
 
-        @keyframes sparkleAnimation {
+        @keyframes yayAnimation {
             0% {
-                width: 0px;
-                height: 0px;
-                opacity: 1;
+                opacity: 0;
+                transform: translate(-50%, -50%) scale(0);
             }
             50% {
-                width: 30px;
-                height: 30px;
-                opacity: 0.8;
+                opacity: 1;
+                transform: translate(-50%, -50%) scale(1.2);
             }
             100% {
-                width: 50px;
-                height: 50px;
-                opacity: 0;
+                opacity: 1;
+                transform: translate(-50%, -50%) scale(1);
             }
         }
 
-        /* Extra sparkles with color variation for celebration */
-        .extra-sparkle {
-            background: rgba(255, 223, 0, 1);
-            animation: extraSparkleAnimation 1.5s ease-out infinite;
-        }
-
-        @keyframes extraSparkleAnimation {
+        @keyframes colorChange {
             0% {
-                width: 0px;
-                height: 0px;
-                opacity: 1;
+                background: linear-gradient(45deg, red, orange, yellow, green, blue, purple);
             }
             50% {
-                width: 40px;
-                height: 40px;
-                opacity: 0.6;
+                background: linear-gradient(45deg, purple, blue, green, yellow, orange, red);
             }
             100% {
-                width: 60px;
-                height: 60px;
-                opacity: 0;
+                background: linear-gradient(45deg, red, orange, yellow, green, blue, purple);
             }
+        }
+
+        /* Confetti animation */
+        .confetti {
+            position: absolute;
+            width: 8px;
+            height: 8px;
+            background-color: #FFD700;
+            opacity: 0;
+            animation: confettiAnimation 2s ease-out forwards;
+        }
+
+        @keyframes confettiAnimation {
+            0% {
+                opacity: 1;
+                transform: translate(0, 0) rotate(0deg);
+            }
+            100% {
+                opacity: 0;
+                transform: translate(var(--x), var(--y)) rotate(720deg);
+            }
+        }
+
+        .confetti-wrapper {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
         }
 
     </style>
 </head>
 <body>
     <div class="canvas-container">
-        <canvas id="canvas" width="150" height="150"></canvas>
+        <canvas id="canvas" width="300" height="300"></canvas>
+        <div class="congratulation-text" id="congratulationText">YAY!</div>
+        <div class="confetti-wrapper" id="confettiWrapper"></div>
     </div>
 
     <script>
         function init() {
             var canvas = document.getElementById('canvas');
             var ctx = canvas.getContext('2d');
+            var congratulationText = document.getElementById('congratulationText');
+            var confettiWrapper = document.getElementById('confettiWrapper');
             ctx.fillStyle = 'gray';
             ctx.fillRect(0, 0, canvas.width, canvas.height);
 
@@ -124,7 +145,8 @@
 
                 scratchedArea += Math.PI * Math.pow(20, 2); 
                 if (scratchedArea > (canvas.width * canvas.height) * 0.6) { 
-                    showSparkles();
+                    showConfetti();
+                    showCongratulationText();
                 }
             }
 
@@ -171,24 +193,32 @@
             }
         }
 
-        function showSparkles() {
-            var sparkleCount = 10;
+        function showCongratulationText() {
+            var congratulationText = document.getElementById('congratulationText');
+            congratulationText.style.opacity = 1;
+            congratulationText.style.animation = 'yayAnimation 2s forwards';
+        }
+
+        function showConfetti() {
+            var confettiCount = 30;
             var canvasRect = document.getElementById('canvas').getBoundingClientRect();
+            var confettiWrapper = document.getElementById('confettiWrapper');
 
-            for (let i = 0; i < sparkleCount; i++) {
-                var sparkle = document.createElement('div');
-                sparkle.classList.add('sparkle', 'extra-sparkle');
-                document.body.appendChild(sparkle);
+            for (let i = 0; i < confettiCount; i++) {
+                var confetti = document.createElement('div');
+                confetti.classList.add('confetti');
+                confettiWrapper.appendChild(confetti);
 
-                var randomX = Math.random() * canvasRect.width + canvasRect.left;
-                var randomY = Math.random() * canvasRect.height + canvasRect.top;
-
-                sparkle.style.top = randomY + 'px';
-                sparkle.style.left = randomX + 'px';
+                var randomX = (Math.random() - 0.5) * 200;
+                var randomY = (Math.random() - 0.5) * 200;
+                confetti.style.setProperty('--x', randomX + 'px');
+                confetti.style.setProperty('--y', randomY + 'px');
+                confetti.style.top = Math.random() * canvasRect.height + canvasRect.top + 'px';
+                confetti.style.left = Math.random() * canvasRect.width + canvasRect.left + 'px';
 
                 setTimeout(() => {
-                    sparkle.remove();
-                }, 1500);
+                    confetti.remove();
+                }, 2000);
             }
         }
 
