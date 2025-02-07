@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Scratch Card</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/bodymovin/5.7.4/lottie.min.js"></script>
     <style>
         body {
             margin: 0;
@@ -37,30 +36,25 @@
         }
 
         #canvas {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            border-radius: 20px;
-            pointer-events: none; /* Disable pointer events so Lottie can work */
+            border-radius: 20px; /* Ensure the canvas also has rounded corners */
         }
 
-        #lottie-animation {
+        .confetti {
             position: absolute;
-            top: 0;
-            left: 0;
             width: 100%;
             height: 100%;
+            pointer-events: none;
         }
     </style>
 </head>
 <body>
     <div class="message">Scratch here to see your team number!</div>
     <div class="canvas-container">
-        <div id="lottie-animation"></div>
         <canvas id="canvas" width="150" height="150"></canvas>
+        <div class="confetti" id="confetti"></div>
     </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bodymovin/5.7.11/lottie.min.js"></script>
 
     <script>
         function init() {
@@ -69,13 +63,13 @@
             ctx.fillStyle = 'gray';
             ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-            // Initialize Lottie Animation
-            var animation = lottie.loadAnimation({
-                container: document.getElementById('lottie-animation'),
+            // Initialize Lottie animation for confetti
+            var confettiAnimation = lottie.loadAnimation({
+                container: document.getElementById('confetti'),
                 renderer: 'svg',
-                loop: true,
-                autoplay: true,
-                path: 'https://assets2.lottiefiles.com/packages/lf20_ekxv4zvw.json' // Link to your scratch animation
+                loop: false,
+                autoplay: false,
+                path: 'path/to/your/confetti-animation.json' // Update with your confetti animation JSON path
             });
 
             function getOffset(e) {
@@ -97,6 +91,7 @@
                 ctx.beginPath();
                 ctx.arc(offset.x, offset.y, 20, 0, Math.PI * 2, true); // Larger brush for smoother effect
                 ctx.fill();
+                checkIfComplete();
             }
 
             function handleMove(e) {
@@ -114,6 +109,20 @@
             function stopScratching() {
                 canvas.removeEventListener('mousemove', handleMove, false);
                 canvas.removeEventListener('touchmove', handleMove, false);
+            }
+
+            function checkIfComplete() {
+                var data = ctx.getImageData(0, 0, canvas.width, canvas.height).data;
+                var total = data.length / 4;
+                var count = 0;
+                for (var i = 0; i < data.length; i += 4) {
+                    if (data[i + 3] === 0) { // Check if pixel is transparent
+                        count++;
+                    }
+                }
+                if (count / total > 0.7) { // Adjust the threshold as needed
+                    confettiAnimation.goToAndPlay(0, true); // Play the confetti animation
+                }
             }
 
             // Event listeners for start and stop of scratching
